@@ -1,0 +1,26 @@
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# Output / results (not tracked — generate locally)
+results/
+output/
+figures/
+*.pdf
+*.png
+*.xlsx
+*.csv
+
+# Data (not tracked — too large / proprietary)
+data/
+*.txt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files
+~$*
+*.tmp
