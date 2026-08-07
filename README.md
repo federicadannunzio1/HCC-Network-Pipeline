@@ -84,13 +84,13 @@ HCC-Network-Pipeline/
 
 | Step | Method | Reference |
 |------|--------|-----------|
-| Switch gene detection | SWIM | Fiscon G. et al., *Cell Rep Methods*, 2022 |
+| Switch gene detection | SWIM | Paci P. et al., *Sci Rep*, 2017 |
 | Disease enrichment | Hypergeometric test (DisGeNET) | This work |
 | Interactome module | LCC analysis | This work |
 | Target prioritisation | Random Walk with Restart | Köhler S. et al., *Am J Hum Genet*, 2008 |
 | Gene ID conversion | biomaRt | Durinck S. et al., *Nat Protoc*, 2009 |
 
-> **Note on SWIM:** Switch gene detection was performed using the SWIM R package (Fiscon et al., 2022). SWIM code is not included in this repository; please refer to the [SWIMmeR package](https://github.com/sportingCode/SWIMmeR) for installation and usage.
+> **Note on SWIM:** Switch gene detection was performed using the SWIM method (Paci P. et al., *Sci Rep* 2017) implemented via the SWIMmeR R package (Paci P. & Fiscon G., *Bioinformatics* 2022). SWIM code is not included in this repository; please refer to the [SWIMmeR package](https://github.com/sportingCode/SWIMmeR) for installation and usage.
 
 ---
 
