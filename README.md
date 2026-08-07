@@ -90,7 +90,7 @@ HCC-Network-Pipeline/
 | Target prioritisation | Random Walk with Restart | Köhler S. et al., *Am J Hum Genet*, 2008 |
 | Gene ID conversion | biomaRt | Durinck S. et al., *Nat Protoc*, 2009 |
 
-> **Note on SWIM:** Switch gene detection was performed using the SWIM R package (Fiscon et al., 2022). SWIM code is not included in this repository; please refer to the [SWIM package](https://bioconductor.org/packages/SWIM/) for installation and usage.
+> **Note on SWIM:** Switch gene detection was performed using the SWIM R package (Fiscon et al., 2022). SWIM code is not included in this repository; please refer to the [SWIMmeR package](https://github.com/sportingCode/SWIMmeR) for installation and usage.
 
 ---
 
