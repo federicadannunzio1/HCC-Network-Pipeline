@@ -15,12 +15,12 @@
 
 extractLargestConnectedComponent <- function(graph) {
 
-  component <- components(graph)
+  component <- igraph::components(graph)
   lcc_idx   <- which(component$membership == which.max(component$csize))
-  lcc       <- induced_subgraph(graph, V(graph)[lcc_idx])
+  lcc       <- igraph::induced_subgraph(graph, igraph::V(graph)[lcc_idx])
 
   data.frame(
-    num_node = length(V(lcc)),
-    num_edge = length(E(lcc))
+    num_node = length(igraph::V(lcc)),
+    num_edge = length(igraph::E(lcc))
   )
 }

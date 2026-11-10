@@ -1,52 +1,46 @@
 # =============================================================================
 # Title:       Find Switch Gene Outliers from RWR Results
 # Description: Identifies switch genes that are also IQR-based outliers in the
-#              RWR z-score distribution. Compares newly identified outliers
-#              against a previously saved outlier list to find additions.
-#              Assumes `high_outliers` is already present in the R environment
-#              (e.g., computed upstream in the same session).
-# Inputs:      - list_switch_combo_cluster2_and_nn_neg_cluster3.xlsx
-#                  (sheet 2): reference list of switch module genes
-#              - iqr_extreme_switch_genes_z_score.txt: previously identified
-#                  IQR outliers
-#              - high_outliers (in-memory): data frame of high-scoring outliers
-#                  with a `gene_symbols` column
-# Outputs:     - all_selected_switch_ouliers_iqr.xlsx: switch genes among the
-#                  current IQR outliers
+#              degree-preserving RWR z-score distribution. Compares with a
+#              previously saved outlier list to find new additions.
+# Inputs:      - data/switch_module.xlsx (sheet 2): switch module gene list
+#              - results/degree_preserving/dp_iqr_outliers.txt
+#              - results/degree_preserving/dp_targetseed_probability_z_score.txt
+# Outputs:     - results/switch_outliers/all_selected_switch_outliers_iqr.xlsx
 # Author:      Federica D'Annunzio
 # =============================================================================
 
-# --- Libraries ----------------------------------------------------------------
-library(xlsx)
+rm(list = ls())
+
+library(openxlsx)
+
+# --- Configuration -----------------------------------------------------------
+base_path <- "cell_lines/04_random_walk"   # <-- update before running
 
 # --- Load reference switch module ---------------------------------------------
 switch_module <- read.xlsx(
-  "~/Documents/projects/HCC_data/cell_lines/hepatosome_Paola/list_switch_combo_cluster2_and_nn_neg_cluster3.xlsx",
-  sheetIndex = 2
+  file.path(base_path, "data/switch_module.xlsx"),
+  sheet = 2
+)
+
+# --- Load degree-preserving IQR outliers --------------------------------------
+high_outliers <- read.table(
+  file.path(base_path, "results/degree_preserving/dp_iqr_outliers.txt"),
+  sep = "\t", header = TRUE, quote = "", check.names = FALSE
 )
 
 # --- Filter outliers to switch genes ------------------------------------------
-# Subset the in-memory high_outliers to retain only genes in the switch module
 switch_outliers <- high_outliers[which(high_outliers$gene_symbols %in% switch_module$hgnc_symbol), ]
 
 # --- Export current switch outliers -------------------------------------------
+out_dir <- file.path(base_path, "results/switch_outliers")
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+
 write.xlsx(
   switch_outliers,
-  "~/Documents/projects/HCC_data/cell_lines/random_walk/res/targets_seed/all_selected_switch_ouliers_iqr.xlsx",
-  row.names = FALSE
+  file.path(out_dir, "all_selected_switch_outliers_iqr.xlsx"),
+  rowNames = FALSE
 )
 
-# --- Compare with previously saved outlier list -------------------------------
-old_iqr_outliers <- read.table(
-  "~/Documents/projects/HCC_data/cell_lines/random_walk/res/targets_seed/iqr_extreme_switch_genes_z_score.txt",
-  sep    = "\t",
-  quote  = "",
-  header = TRUE
-)
-
-# Genes present in both the old and new outlier lists
-x <- intersect(old_iqr_outliers$gene_symbols, switch_outliers$gene_symbols)
-
-# Genes newly added (present in current run but not in the old list)
-added_switch <- setdiff(switch_outliers$gene_symbols, x)
-ind          <- which(switch_outliers$gene_symbols %in% added_switch)
+cat("Switch gene outliers:", nrow(switch_outliers), "\n")
+cat("Genes:", switch_outliers$gene_symbols, "\n")

@@ -2,23 +2,23 @@
 # Function: computeDegreeDistribution
 # =============================================================================
 # Description: Computes the degree distribution for a list of genes within
-#              the global interactome graph.
+#              the interactome graph.
 #
 # Args:
 #   gene_ids : character vector of node IDs present in the interactome
+#   graph    : igraph object (the interactome)
+#   node     : character vector of all node names in graph
 #
 # Returns:
 #   data.frame with columns: degree, frequency
 #
-# Requires (from global env): graph, node
-#
 # Author: Federica D'Annunzio
 # =============================================================================
 
-computeDegreeDistribution <- function(gene_ids) {
+computeDegreeDistribution <- function(gene_ids, graph = graph, node = node) {
 
   idx    <- which(node %in% gene_ids)
-  deg    <- degree(graph, v = V(graph)[idx])
+  deg    <- igraph::degree(graph, v = igraph::V(graph)[idx])
   deg_t  <- table(deg)
 
   data.frame(

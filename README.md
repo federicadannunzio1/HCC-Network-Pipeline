@@ -41,8 +41,9 @@ RNA-seq data (SOAT2-only HepG2 cells)
          │
          ▼
   04 · Random Walk with Restart (RWR)
-         Propagation from known atorvastatin/ezetimibe drug targets
-         Prioritisation of network-proximal switch genes
+         Propagation from 8 atorvastatin/ezetimibe drug targets
+         Degree-preserving randomization (1 000 iterations)
+         Sensitivity analysis: leave-HMGCR-out test
          │
          ▼
   05 · Target Analysis
@@ -66,7 +67,8 @@ HCC-Network-Pipeline/
 │   ├── 02_hepatosome/            # Hypergeometric enrichment + disease network
 │   ├── 03_interactome_mapping/   # LCC analysis in the human interactome
 │   │   └── scripts/              # Helper functions for module analysis
-│   ├── 04_random_walk/           # RWR from drug targets + outlier detection
+│   ├── 04_random_walk/           # RWR, degree-preserving randomization,
+│   │                              #   sensitivity analysis & plots
 │   └── 05_target_analysis/       # UBIAD1 interactome + expression plots
 │
 ├── human_tissues/
@@ -88,6 +90,8 @@ HCC-Network-Pipeline/
 | Disease enrichment | Hypergeometric test (DisGeNET) | This work |
 | Interactome module | LCC analysis | This work |
 | Target prioritisation | Random Walk with Restart | Köhler S. et al., *Am J Hum Genet*, 2008 |
+| Statistical validation | Degree-preserving randomization (1 000 iterations) | This work |
+| Sensitivity analysis | Leave-one-seed-out (HMGCR) | This work |
 | Gene ID conversion | biomaRt | Durinck S. et al., *Nat Protoc*, 2009 |
 
 > **Note on SWIM:** Switch gene detection was performed using the SWIM method (Paci P. et al., *Sci Rep* 2017) implemented via the SWIMmeR R package (Paci P. & Fiscon G., *Bioinformatics* 2022). SWIM code is not included in this repository; please refer to the [SWIMmeR package](https://github.com/sportingCode/SWIMmeR) for installation and usage.
@@ -102,6 +106,8 @@ install.packages(c(
   "igraph",       # network analysis
   "ggplot2",      # plotting
   "dplyr",        # data manipulation
+  "tidyr",        # data reshaping
+  "openxlsx",     # Excel I/O
   "eulerr",       # Venn diagrams
   "pheatmap",     # heatmaps
   "RColorBrewer"  # colour palettes
@@ -110,8 +116,9 @@ install.packages(c(
 # Bioconductor
 if (!require("BiocManager")) install.packages("BiocManager")
 BiocManager::install(c(
-  "biomaRt",   # gene ID conversion
-  "DESeq2"     # RNA-seq normalisation (upstream step)
+  "biomaRt",                # gene ID conversion
+  "org.Hs.eg.db",           # Entrez ↔ Symbol mapping
+  "RandomWalkRestartMH"     # multiplex RWR
 ))
 ```
 

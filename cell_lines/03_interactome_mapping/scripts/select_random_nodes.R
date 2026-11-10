@@ -6,16 +6,16 @@
 #
 # Args:
 #   degree_distribution : data.frame with columns "degree" and "frequency"
+#   node                : character vector of all node names
+#   degree              : named numeric vector of node degrees
 #
 # Returns:
 #   character vector of randomly selected node IDs
 #
-# Requires (from global env): node, degree (node degree vector)
-#
 # Author: Federica D'Annunzio
 # =============================================================================
 
-selectRandomNodes <- function(degree_distribution) {
+selectRandomNodes <- function(degree_distribution, node, degree) {
 
   random_nodes <- unlist(lapply(degree_distribution$degree, function(d) {
     freq <- degree_distribution$frequency[degree_distribution$degree == d]

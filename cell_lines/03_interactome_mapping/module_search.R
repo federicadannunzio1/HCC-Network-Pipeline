@@ -7,12 +7,12 @@
 #              (1000 permutations).
 #
 # Input:
-#   - files/selected_switch_eze_ato.txt  : Switch gene list (Ensembl, Symbol, Entrez)
-#   - files/interactome_PNAS2021.txt     : Human interactome edge list
+#   - data/selected_switch_eze_ato.txt  : Switch gene list (Ensembl, Symbol, Entrez)
+#   - data/interactome_PNAS2021.txt     : Human interactome edge list
 #
 # Output:
-#   - res/*_subnetwork.txt : Subgraph edge list (ncol format)
-#   - eze_combined_plots_high_res.png    : Distribution plots (LCC size, edges)
+#   - results/*_subnetwork.txt             : Subgraph edge list
+#   - results/eze_combined_plots_high_res.png : Distribution plots
 #
 # Author: Federica D'Annunzio
 # =============================================================================
@@ -23,32 +23,28 @@ library(igraph)
 
 options(stringsAsFactors = FALSE)
 
-path <- "path/to/03_interactome_mapping"   # <-- update before running
-setwd(path)
+# --- Configuration -----------------------------------------------------------
+base_path <- "cell_lines/03_interactome_mapping"   # <-- update before running
 
 # Load helper functions
-source("scripts/compute_degree_distribution.R")
-source("scripts/extract_subgraph.R")
-source("scripts/extract_lcc.R")
-source("scripts/select_random_nodes.R")
-source("scripts/perform_iteration.R")
-source("scripts/compute_statistics.R")
+source(file.path(base_path, "scripts/compute_degree_distribution.R"))
+source(file.path(base_path, "scripts/extract_subgraph.R"))
+source(file.path(base_path, "scripts/extract_lcc.R"))
+source(file.path(base_path, "scripts/select_random_nodes.R"))
+source(file.path(base_path, "scripts/perform_iteration.R"))
+source(file.path(base_path, "scripts/compute_statistics.R"))
 
 disease <- "HCC_eze_ato"
 
-# -----------------------------------------------------------------------------
-# Load data
-# -----------------------------------------------------------------------------
-my_genes <- read.table("files/selected_switch_eze_ato.txt",
+# --- Load data ----------------------------------------------------------------
+my_genes <- read.table(file.path(base_path, "data/selected_switch_eze_ato.txt"),
                        header = TRUE, sep = "\t", check.names = FALSE, quote = "")
 colnames(my_genes) <- c("ensembl", "Symbol", "ID")
 
-interactome <- read.table("files/interactome_PNAS2021.txt",
+interactome <- read.table(file.path(base_path, "data/interactome_PNAS2021.txt"),
                           header = TRUE, sep = "\t", check.names = FALSE, quote = "")
 
-# -----------------------------------------------------------------------------
-# Build interactome graph (largest connected component only)
-# -----------------------------------------------------------------------------
+# --- Build interactome graph (largest connected component only) ---------------
 graph <- graph_from_data_frame(interactome, directed = FALSE)
 graph <- simplify(graph, remove.multiple = TRUE, remove.loops = TRUE)
 
@@ -61,22 +57,22 @@ degree <- degree(graph, v = V(graph))
 
 rm(interactome)
 
-# -----------------------------------------------------------------------------
-# Extract disease module and compute LCC
-# -----------------------------------------------------------------------------
+# --- Extract disease module and compute LCC -----------------------------------
 degree_distribution <- computeDegreeDistribution(my_genes$ID)
-subgraph            <- extractSubgraph(my_genes)
-subgraph_lcc        <- extractLargestConnectedComponent(subgraph)
+subgraph_result     <- extractSubgraph(my_genes, graph, node, disease,
+                                       file.path(base_path, "results"))
+subgraph_lcc        <- extractLargestConnectedComponent(subgraph_result)
 
-# -----------------------------------------------------------------------------
-# Permutation test (1000 iterations)
-# -----------------------------------------------------------------------------
-random_distribution <- performIteration(iter = 1000)
+# --- Permutation test (1000 iterations) ---------------------------------------
+random_distribution <- performIteration(iter = 1000, graph, degree_distribution,
+                                        node, degree)
 
-# -----------------------------------------------------------------------------
-# Plot and compute statistics
-# -----------------------------------------------------------------------------
-png("eze_combined_plots_high_res.png", width = 4800, height = 1600, res = 600)
+# --- Plot and compute statistics ----------------------------------------------
+res_dir <- file.path(base_path, "results")
+dir.create(res_dir, showWarnings = FALSE, recursive = TRUE)
+
+png(file.path(res_dir, "eze_combined_plots_high_res.png"),
+    width = 4800, height = 1600, res = 600)
 
 par(mfrow = c(1, 3),
     mar   = c(5, 2, 4, 2) + 0.1,
@@ -84,6 +80,6 @@ par(mfrow = c(1, 3),
 
 computeStatistics(random_distribution$num_node_LCC, subgraph_lcc$num_node, "Size of LCC")
 computeStatistics(random_distribution$num_edge_LCC, subgraph_lcc$num_edge, "Number of interactions in LCC")
-computeStatistics(random_distribution$num_edge_tot,  length(E(subgraph)),  "Number of total interactions")
+computeStatistics(random_distribution$num_edge_tot, length(E(subgraph_result)), "Number of total interactions")
 
 dev.off()
