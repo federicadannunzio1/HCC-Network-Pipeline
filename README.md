@@ -63,11 +63,6 @@ RNA-seq data (SOAT2-only HepG2 cells)
 HCC-Network-Pipeline/
 │
 ├── scripts/
-│   ├── 00_utils/                  # Shared utility functions
-│   │   ├── conversion.R           #   Ensembl → HGNC gene ID conversion
-│   │   ├── add_gene_info.R        #   Gene annotation helper
-│   │   └── venn_diagram.R         #   Venn diagram visualisation
-│   ├── 01_switch_genes/           # SWIM output post-processing
 │   ├── 02_hepatosome/             # Hypergeometric enrichment + disease network
 │   ├── 03_interactome_mapping/    # LCC analysis in the human interactome
 │   │   └── scripts/               #   Helper functions for module analysis
@@ -93,7 +88,7 @@ HCC-Network-Pipeline/
 | Target prioritisation | Random Walk with Restart | Köhler S. et al., *Am J Hum Genet*, 2008 |
 | Statistical validation | Degree-preserving randomization (1 000 iterations) | This work |
 | Sensitivity analysis | Leave-one-seed-out (HMGCR) | This work |
-| Gene ID conversion | biomaRt | Durinck S. et al., *Nat Protoc*, 2009 |
+| Gene ID mapping | org.Hs.eg.db | Carlson M., Bioconductor |
 
 > **Note on SWIM:** Switch gene detection was performed using the SWIM method (Paci P. et al., *Sci Rep* 2017) implemented via the SWIMmeR R package (Paci P. & Fiscon G., *Bioinformatics* 2022). SWIM code is not included in this repository; please refer to the [SWIMmeR package](https://github.com/sportingCode/SWIMmeR) for installation and usage.
 
@@ -106,18 +101,13 @@ HCC-Network-Pipeline/
 install.packages(c(
   "igraph",       # network analysis
   "ggplot2",      # plotting
-  "dplyr",        # data manipulation
   "tidyr",        # data reshaping
-  "openxlsx",     # Excel I/O
-  "eulerr",       # Venn diagrams
-  "pheatmap",     # heatmaps
   "RColorBrewer"  # colour palettes
 ))
 
 # Bioconductor
 if (!require("BiocManager")) install.packages("BiocManager")
 BiocManager::install(c(
-  "biomaRt",                # gene ID conversion
   "org.Hs.eg.db",           # Entrez ↔ Symbol mapping
   "RandomWalkRestartMH"     # multiplex RWR
 ))
