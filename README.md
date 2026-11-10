@@ -1,27 +1,13 @@
 # HCC Network Pipeline
 
-**Network medicine framework for the identification of novel drug targets in hepatocellular carcinoma (HCC) through lipid-lowering therapy.**
-
-> 📄 *Manuscript in preparation*
-> D'Annunzio F., Pedrelli M., Fiscon G., Paci P., Parini P.
-> *From hepatosome to interactome: network-based discovery of UBIAD1 as a lipid-metabolism target in hepatocellular carcinoma*
-
----
-
-## Overview
-
-This repository contains the R-based analysis pipeline developed to identify **UBIAD1** as a novel putative drug target in HCC, by integrating RNA-seq transcriptomics with a network medicine approach.
-
-The pipeline was applied to two datasets:
-- **Cell lines** — SOAT2-only HepG2 cells treated with atorvastatin (ATO5, 5 µM), ezetimibe (EZE25, 25 µM), their combination, or placebo
-- **Human tissues** — liver biopsies from the TSS clinical trial (simvastatin + ezetimibe vs placebo)
+Network medicine framework for the identification of novel drug targets in hepatocellular carcinoma (HCC).
 
 ---
 
 ## Pipeline
 
 ```
-RNA-seq data (SOAT2-only HepG2 cells)
+RNA-seq data
          │
          ▼
   Switch Gene Detection (SWIM — see SWIMmeR repository)
@@ -41,18 +27,18 @@ RNA-seq data (SOAT2-only HepG2 cells)
          │
          ▼
   03 · Random Walk with Restart (RWR)
-         Propagation from 8 atorvastatin/ezetimibe drug targets
+         Propagation from drug-target seed genes
          Degree-preserving randomization (1 000 iterations)
-         Sensitivity analysis: leave-HMGCR-out test
+         Sensitivity analysis: leave-one-seed-out test
          │
          ▼
   04 · Target Analysis
-         UBIAD1 characterisation in the interactome and hepatosome
-         Expression analysis: UBIAD1 vs HMGCR across conditions
+         Target characterisation in the interactome
+         Expression analysis across treatment conditions
          │
          ▼
   05 · Tissue Validation
-         UBIAD1 & HMGCR mRNA in liver biopsies (TSS trial)
+         mRNA expression in human liver biopsies
 ```
 
 ---
@@ -68,8 +54,8 @@ HCC-Network-Pipeline/
 │   │   └── scripts/               #   Helper functions for module analysis
 │   ├── 03_random_walk/            # RWR, degree-preserving randomization,
 │   │                              #   sensitivity analysis & plots
-│   ├── 04_target_analysis/        # UBIAD1 interactome + expression plots
-│   └── 05_tissue_validation/      # UBIAD1/HMGCR in liver biopsies (TSS trial)
+│   ├── 04_target_analysis/        # Target interactome + expression plots
+│   └── 05_tissue_validation/      # Expression validation in liver biopsies
 │
 ├── .gitignore
 ├── LICENSE
@@ -86,11 +72,10 @@ HCC-Network-Pipeline/
 | Disease enrichment | Hypergeometric test (DisGeNET) | This work |
 | Interactome module | LCC analysis | This work |
 | Target prioritisation | Random Walk with Restart | Köhler S. et al., *Am J Hum Genet*, 2008 |
-| Statistical validation | Degree-preserving randomization (1 000 iterations) | This work |
-| Sensitivity analysis | Leave-one-seed-out (HMGCR) | This work |
-| Gene ID mapping | org.Hs.eg.db | Carlson M., Bioconductor |
+| Statistical validation | Degree-preserving randomization (1 000 iter.) | This work |
+| Sensitivity analysis | Leave-one-seed-out | This work |
 
-> **Note on SWIM:** Switch gene detection was performed using the SWIM method (Paci P. et al., *Sci Rep* 2017) implemented via the SWIMmeR R package (Paci P. & Fiscon G., *Bioinformatics* 2022). SWIM code is not included in this repository; please refer to the [SWIMmeR package](https://github.com/sportingCode/SWIMmeR) for installation and usage.
+> **Note on SWIM:** Switch gene detection was performed using the SWIM method (Paci P. et al., *Sci Rep* 2017) implemented via the SWIMmeR R package (Paci P. & Fiscon G., *Bioinformatics* 2022). SWIM code is not included in this repository; please refer to the [SWIMmeR package](https://github.com/sportingCode/SWIMmeR).
 
 ---
 
@@ -112,17 +97,3 @@ BiocManager::install(c(
   "RandomWalkRestartMH"     # multiplex RWR
 ))
 ```
-
----
-
-## Data Availability
-
-RNA-seq data from the TSS clinical trial are available upon reasonable request to the corresponding authors. Cell line RNA-seq data will be made available upon publication.
-
----
-
-## Contact
-
-**Federica D'Annunzio**
-Dept. of Translational and Precision Medicine, Sapienza University of Rome
-✉ federica.dannunzio@uniroma1.it
