@@ -62,22 +62,23 @@ RNA-seq data (SOAT2-only HepG2 cells)
 ```
 HCC-Network-Pipeline/
 │
-├── cell_lines/
-│   ├── 01_switch_genes/          # SWIM output post-processing
-│   ├── 02_hepatosome/            # Hypergeometric enrichment + disease network
-│   ├── 03_interactome_mapping/   # LCC analysis in the human interactome
-│   │   └── scripts/              # Helper functions for module analysis
-│   ├── 04_random_walk/           # RWR, degree-preserving randomization,
+├── scripts/
+│   ├── 00_utils/                  # Shared utility functions
+│   │   ├── conversion.R           #   Ensembl → HGNC gene ID conversion
+│   │   ├── add_gene_info.R        #   Gene annotation helper
+│   │   └── venn_diagram.R         #   Venn diagram visualisation
+│   ├── 01_switch_genes/           # SWIM output post-processing
+│   ├── 02_hepatosome/             # Hypergeometric enrichment + disease network
+│   ├── 03_interactome_mapping/    # LCC analysis in the human interactome
+│   │   └── scripts/               #   Helper functions for module analysis
+│   ├── 04_random_walk/            # RWR, degree-preserving randomization,
 │   │                              #   sensitivity analysis & plots
-│   └── 05_target_analysis/       # UBIAD1 interactome + expression plots
+│   ├── 05_target_analysis/        # UBIAD1 interactome + expression plots
+│   └── 06_tissue_validation/      # UBIAD1/HMGCR in liver biopsies (TSS trial)
 │
-├── human_tissues/
-│   └── validation_plots.R        # UBIAD1/HMGCR boxplots in liver biopsies
-│
-└── utils/                        # Shared utility functions
-    ├── conversion.R              # Ensembl → HGNC gene ID conversion
-    ├── add_gene_info.R           # Gene annotation helper
-    └── venn_diagram.R            # Venn diagram visualisation
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
 
 ---
