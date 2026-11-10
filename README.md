@@ -24,34 +24,34 @@ The pipeline was applied to two datasets:
 RNA-seq data (SOAT2-only HepG2 cells)
          │
          ▼
-  01 · Switch Gene Detection
+  Switch Gene Detection (SWIM — see SWIMmeR repository)
          SWIM-based co-expression network analysis
          Identifies genes whose network role shifts between conditions
          │
          ▼
-  02 · Hepatosome Construction
+  01 · Hepatosome Construction
          Hypergeometric enrichment of switch genes in DisGeNET
          Bipartite network: switch genes ↔ hepato-biliary diseases
          │
          ▼
-  03 · Interactome Mapping
+  02 · Interactome Mapping
          Mapping switch genes onto the human PPI network
          LCC (Largest Connected Component) analysis
          Statistical validation against random gene sets
          │
          ▼
-  04 · Random Walk with Restart (RWR)
+  03 · Random Walk with Restart (RWR)
          Propagation from 8 atorvastatin/ezetimibe drug targets
          Degree-preserving randomization (1 000 iterations)
          Sensitivity analysis: leave-HMGCR-out test
          │
          ▼
-  05 · Target Analysis
+  04 · Target Analysis
          UBIAD1 characterisation in the interactome and hepatosome
          Expression analysis: UBIAD1 vs HMGCR across conditions
          │
          ▼
-  Human tissue validation
+  05 · Tissue Validation
          UBIAD1 & HMGCR mRNA in liver biopsies (TSS trial)
 ```
 
@@ -63,13 +63,13 @@ RNA-seq data (SOAT2-only HepG2 cells)
 HCC-Network-Pipeline/
 │
 ├── scripts/
-│   ├── 02_hepatosome/             # Hypergeometric enrichment + disease network
-│   ├── 03_interactome_mapping/    # LCC analysis in the human interactome
+│   ├── 01_hepatosome/             # Hypergeometric enrichment + disease network
+│   ├── 02_interactome_mapping/    # LCC analysis in the human interactome
 │   │   └── scripts/               #   Helper functions for module analysis
-│   ├── 04_random_walk/            # RWR, degree-preserving randomization,
+│   ├── 03_random_walk/            # RWR, degree-preserving randomization,
 │   │                              #   sensitivity analysis & plots
-│   ├── 05_target_analysis/        # UBIAD1 interactome + expression plots
-│   └── 06_tissue_validation/      # UBIAD1/HMGCR in liver biopsies (TSS trial)
+│   ├── 04_target_analysis/        # UBIAD1 interactome + expression plots
+│   └── 05_tissue_validation/      # UBIAD1/HMGCR in liver biopsies (TSS trial)
 │
 ├── .gitignore
 ├── LICENSE
